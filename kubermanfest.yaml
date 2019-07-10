@@ -1,0 +1,38 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: string-calc-spa
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 60 
+  template:
+    metadata:
+      labels:
+        app: string-calc-spa
+    spec:
+      containers:
+      - name: string-calc-spa
+        image: iainkiloh/string-calc-spa:v2
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: 250m
+          limits:
+            cpu: 500m
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: string-calc-spa-srv
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+    nodePort: 30038
+  selector:
+    app: string-calc-spa
